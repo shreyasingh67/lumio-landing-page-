@@ -16,9 +16,13 @@ Lumio is a modern, visually stunning productivity landing page designed to simul
 
 ## 🖼️ Preview
 
-![Lumio Preview](https://via.placeholder.com/1200x600?text=Lumio+Preview)
+![Lumio Preview](9
 
----
+---<img width="1888" height="861" alt="Screenshot 2026-03-27 222720" src="https://github.com/user-attachments/assets/69c2692d-26a3-400e-abef-01a8115383b4" />
+zvb<img width="1883" height="869" alt="Screenshot 2026-03-27 223226" src="https://github.com/user-attachments/assets/2e1ec902-e7c7-48b0-9bfb-b0106e0138b9" />
+<img width="1886" height="1064" alt="Screenshot 2026-03-27 223409" src="https://github.com/user-attachments/assets/d70ff640-c412-4e43-b8b4-66bdd9728b09" />
+<img width="1882" height="1032" alt="Screenshot 2026-03-27 223459" src="https://github.com/user-attachments/assets/7236631a-3cc2-4bf1-b79b-731b3f8378a1" />
+
 
 ## ✨ Features
 
@@ -91,12 +95,13 @@ Open index.html in your browser
 
 ## 📁 Folder Structure
 
-```
 lumio/
 │── index.html
 │── README.md
-```
-
+│── assets/
+│    └── screenshot.png
+│── style.css
+│── script.js
 ---
 
 ## 🚀 Future Improvements
