@@ -10,7 +10,7 @@ Lumio is a modern, visually stunning productivity landing page designed to simul
 
 ## 🌐 Live Demo
 
-👉 https://your-live-link.com *(Add after deployment)*
+👉  https://shreyasingh67.github.io/lumio-landing-page-/
 
 ---
 
