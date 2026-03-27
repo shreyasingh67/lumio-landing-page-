@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lumio — Focus & Flow App</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080b12;
+  --bg2: #0d1120;
+  --surface: #111827;
+  --surface2: #1a2236;
+  --border: rgba(255,255,255,0.07);
+  --text: #f0f4ff;
+  --muted: #8892a4;
+  --accent: #4f8ef7;
+  --accent2: #7c5cfc;
+  --accent3: #f7c34f;
+  --glow: rgba(79,142,247,0.35);
+  --glow2: rgba(124,92,252,0.3);
+  --radius: 20px;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Instrument Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* Custom cursor */
+.cursor {
+  position: fixed; top:0; left:0; z-index:9999; pointer-events:none;
+  width:10px; height:10px; border-radius:50%;
+  background: var(--accent);
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s, width 0.3s, height 0.3s, background 0.3s;
+  mix-blend-mode: screen;
+}
+.cursor-ring {
+  position: fixed; top:0; left:0; z-index:9998; pointer-events:none;
+  width:36px; height:36px; border-radius:50%;
+  border: 1.5px solid rgba(79,142,247,0.5);
+  transform: translate(-50%, -50%);
+  transition: transform 0.18s ease, width 0.3s, height 0.3s;
+}
+
+/* Grid noise overlay */
+body::before {
+  content:'';
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed; top:0; left:0; right:0; z-index: 100;
+  display: flex; align-items:center; justify-content:space-between;
+  padding: 1.2rem 4rem;
+  background: rgba(8,11,18,0.7);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  animation: slideDown 0.6s ease both;
+}
+
+@keyframes slideDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
+
+.logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800; font-size: 1.4rem;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  letter-spacing:-0.02em;
+}
+
+.nav-links { display:flex; gap:2.5rem; list-style:none; }
+.nav-links a {
+  font-size:0.875rem; font-weight:500; color:var(--muted);
+  text-decoration:none; transition:color 0.2s; letter-spacing:0.02em;
+}
+.nav-links a:hover { color:var(--text); }
+
+.nav-cta {
+  padding: 0.55rem 1.4rem;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border:none; border-radius:50px;
+  font-family:'Instrument Sans', sans-serif;
+  font-size:0.875rem; font-weight:500; color:#fff;
+  cursor:pointer; transition:opacity 0.2s, transform 0.2s;
+  box-shadow: 0 4px 20px var(--glow);
+}
+.nav-cta:hover { opacity:0.9; transform:translateY(-1px); }
+
+/* ─── HERO ─── */
+.hero {
+  position:relative; min-height:100vh;
+  display:flex; align-items:center; justify-content:center;
+  flex-direction:column; text-align:center;
+  padding: 8rem 2rem 4rem; overflow:hidden;
+  z-index:1;
+}
+
+/* Glow orbs */
+.orb {
+  position:absolute; border-radius:50%; filter:blur(100px); pointer-events:none;
+}
+.orb-1 {
+  width:600px; height:600px; top:-10%; left:-15%;
+  background: radial-gradient(circle, rgba(79,142,247,0.15), transparent 70%);
+  animation: orbFloat 14s ease-in-out infinite;
+}
+.orb-2 {
+  width:500px; height:500px; top:10%; right:-10%;
+  background: radial-gradient(circle, rgba(124,92,252,0.18), transparent 70%);
+  animation: orbFloat 18s ease-in-out infinite reverse;
+}
+.orb-3 {
+  width:400px; height:400px; bottom:-5%; left:30%;
+  background: radial-gradient(circle, rgba(247,195,79,0.08), transparent 70%);
+  animation: orbFloat 22s ease-in-out infinite 3s;
+}
+@keyframes orbFloat {
+  0%,100%{transform:translate(0,0) scale(1)}
+  33%{transform:translate(30px,-30px) scale(1.05)}
+  66%{transform:translate(-20px,20px) scale(0.95)}
+}
+
+.hero-badge {
+  display:inline-flex; align-items:center; gap:0.5rem;
+  padding:0.4rem 1rem;
+  background:rgba(79,142,247,0.1);
+  border:1px solid rgba(79,142,247,0.25);
+  border-radius:50px; font-size:0.78rem;
+  color:var(--accent); letter-spacing:0.05em; font-weight:500;
+  margin-bottom:1.8rem;
+  animation: fadeUp 0.8s 0.2s ease both;
+}
+.hero-badge::before { content:'✦'; font-size:0.65rem; }
+
+h1 {
+  font-family:'Syne', sans-serif;
+  font-size: clamp(3rem, 8vw, 6.5rem);
+  font-weight:800; line-height:1.0;
+  letter-spacing:-0.04em;
+  max-width: 900px;
+  animation: fadeUp 0.8s 0.3s ease both;
+}
+
+h1 .grad {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 50%, #c084fc 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+
+.hero-sub {
+  margin-top:1.5rem;
+  max-width:520px;
+  font-size:1.1rem; font-weight:300; color:var(--muted); line-height:1.7;
+  animation: fadeUp 0.8s 0.4s ease both;
+}
+
+.hero-actions {
+  margin-top:2.5rem;
+  display:flex; align-items:center; gap:1rem; flex-wrap:wrap; justify-content:center;
+  animation: fadeUp 0.8s 0.5s ease both;
+}
+
+.btn-primary {
+  display:flex; align-items:center; gap:0.6rem;
+  padding:0.9rem 2rem;
+  background:linear-gradient(135deg, var(--accent), var(--accent2));
+  border:none; border-radius:14px;
+  font-family:'Instrument Sans',sans-serif;
+  font-size:1rem; font-weight:500; color:#fff; cursor:pointer;
+  box-shadow:0 8px 32px var(--glow);
+  transition:transform 0.2s, box-shadow 0.2s;
+}
+.btn-primary:hover { transform:translateY(-3px); box-shadow:0 12px 40px var(--glow); }
+
+.btn-secondary {
+  display:flex; align-items:center; gap:0.6rem;
+  padding:0.9rem 2rem;
+  background:transparent;
+  border:1px solid var(--border);
+  border-radius:14px;
+  font-family:'Instrument Sans',sans-serif;
+  font-size:1rem; font-weight:500; color:var(--text); cursor:pointer;
+  transition:border-color 0.2s, background 0.2s;
+}
+.btn-secondary:hover { border-color:rgba(255,255,255,0.2); background:rgba(255,255,255,0.04); }
+
+.store-badges {
+  margin-top:1.5rem;
+  display:flex; gap:1rem; align-items:center; justify-content:center;
+  animation: fadeUp 0.8s 0.65s ease both;
+}
+
+.store-badge {
+  display:flex; align-items:center; gap:0.7rem;
+  padding:0.65rem 1.3rem;
+  background:rgba(255,255,255,0.05);
+  border:1px solid var(--border); border-radius:12px;
+  text-decoration:none; color:var(--text);
+  transition:background 0.2s, border-color 0.2s;
+}
+.store-badge:hover { background:rgba(255,255,255,0.09); border-color:rgba(255,255,255,0.15); }
+.store-badge svg { width:22px; height:22px; flex-shrink:0; }
+.store-badge-text { display:flex; flex-direction:column; }
+.store-badge-text small { font-size:0.6rem; color:var(--muted); letter-spacing:0.05em; text-transform:uppercase; }
+.store-badge-text span { font-size:0.82rem; font-weight:500; }
+
+/* Hero phone mockup */
+.hero-visual {
+  margin-top:4rem;
+  position:relative;
+  animation: fadeUp 0.8s 0.7s ease both;
+}
+
+.phone-wrap {
+  position:relative; display:inline-block;
+}
+
+.phone-frame {
+  width:260px; height:520px;
+  background:var(--surface);
+  border-radius:38px;
+  border:1px solid rgba(255,255,255,0.12);
+  box-shadow:
+    0 0 0 8px rgba(255,255,255,0.04),
+    0 40px 100px rgba(0,0,0,0.6),
+    0 0 80px var(--glow2);
+  overflow:hidden; position:relative;
+  animation: phoneFloat 6s ease-in-out infinite;
+}
+@keyframes phoneFloat {
+  0%,100%{transform:translateY(0) rotate(-1deg)}
+  50%{transform:translateY(-16px) rotate(1deg)}
+}
+
+.phone-screen {
+  width:100%; height:100%;
+  background:linear-gradient(160deg, #0d1829 0%, #0a0f1e 100%);
+  padding:1.2rem;
+  display:flex; flex-direction:column; gap:0.7rem;
+}
+
+.phone-status {
+  display:flex; justify-content:space-between; align-items:center;
+  font-size:0.55rem; color:rgba(255,255,255,0.4); padding:0 0.2rem;
+}
+.phone-time { font-weight:600; font-size:0.7rem; color:rgba(255,255,255,0.8); }
+
+.phone-card {
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:14px; padding:0.9rem;
+}
+.phone-card-label { font-size:0.5rem; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.3rem; }
+.phone-card-val { font-family:'Syne',sans-serif; font-weight:700; font-size:1.3rem; color:#fff; }
+.phone-card-sub { font-size:0.5rem; color:rgba(79,142,247,0.8); margin-top:0.1rem; }
+
+.phone-bar-row { display:flex; flex-direction:column; gap:0.4rem; }
+.phone-bar { height:6px; background:rgba(255,255,255,0.07); border-radius:50px; overflow:hidden; }
+.phone-bar-fill { height:100%; border-radius:50px; }
+.b1 { width:78%; background:linear-gradient(90deg, var(--accent), var(--accent2)); animation:barGrow 2s 1s ease both; }
+.b2 { width:55%; background:linear-gradient(90deg, var(--accent2), #c084fc); animation:barGrow 2s 1.2s ease both; }
+.b3 { width:92%; background:linear-gradient(90deg, var(--accent3), #f79c4f); animation:barGrow 2s 1.4s ease both; }
+@keyframes barGrow { from{width:0} }
+
+.phone-ring-wrap { display:flex; justify-content:center; padding:0.5rem 0; position:relative; }
+.phone-ring-bg { width:80px; height:80px; border-radius:50%; background: conic-gradient(var(--accent) 0% 72%, rgba(255,255,255,0.06) 72% 100%); display:flex; align-items:center; justify-content:center; }
+.phone-ring-inner { width:62px; height:62px; border-radius:50%; background:#0d1829; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.phone-ring-inner span { font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; color:#fff; }
+.phone-ring-inner small { font-size:0.45rem; color:rgba(255,255,255,0.4); }
+
+.floating-tag {
+  position:absolute;
+  background:var(--surface2); border:1px solid var(--border);
+  border-radius:12px; padding:0.6rem 0.9rem;
+  display:flex; align-items:center; gap:0.5rem;
+  font-size:0.72rem; font-weight:500; white-space:nowrap;
+  box-shadow:0 8px 24px rgba(0,0,0,0.4);
+}
+.tag-dot { width:8px; height:8px; border-radius:50%; }
+.tag-1 { top:15%; right:-120px; animation: tagFloat 5s ease-in-out infinite; }
+.tag-2 { bottom:20%; left:-130px; animation: tagFloat 5s 1.5s ease-in-out infinite; }
+@keyframes tagFloat {
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-8px)}
+}
+
+/* ─── STATS ─── */
+.stats-strip {
+  position:relative; z-index:1;
+  display:flex; justify-content:center; gap:0; flex-wrap:wrap;
+  border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+  background:rgba(255,255,255,0.02);
+}
+.stat-item {
+  flex:1; min-width:180px; max-width:260px;
+  padding:2.5rem 2rem; text-align:center;
+  border-right:1px solid var(--border);
+}
+.stat-item:last-child { border-right:none; }
+.stat-num {
+  font-family:'Syne',sans-serif; font-weight:800; font-size:2.6rem;
+  background:linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  line-height:1;
+}
+.stat-label { font-size:0.82rem; color:var(--muted); margin-top:0.4rem; font-weight:300; }
+
+/* ─── SECTIONS ─── */
+section { position:relative; z-index:1; }
+
+.section-label {
+  font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase;
+  color:var(--accent); font-weight:500; margin-bottom:1rem;
+}
+
+/* Features */
+.features {
+  padding:8rem 4rem;
+  max-width:1200px; margin:0 auto;
+}
+
+.features-header { text-align:center; margin-bottom:5rem; }
+
+.features-header h2 {
+  font-family:'Syne',sans-serif; font-weight:800;
+  font-size:clamp(2rem, 4vw, 3.2rem); line-height:1.1; letter-spacing:-0.03em;
+}
+
+.features-header p { margin-top:1rem; color:var(--muted); font-size:1rem; font-weight:300; max-width:480px; margin-inline:auto; line-height:1.7; }
+
+.features-grid {
+  display:grid; grid-template-columns:repeat(3, 1fr); gap:1.5rem;
+}
+
+.feature-card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius); padding:2rem;
+  transition:transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+  position:relative; overflow:hidden;
+}
+.feature-card::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg, var(--accent), var(--accent2));
+  opacity:0; transition:opacity 0.3s;
+}
+.feature-card:hover { transform:translateY(-6px); border-color:rgba(79,142,247,0.3); box-shadow:0 20px 60px rgba(0,0,0,0.3); }
+.feature-card:hover::before { opacity:0.04; }
+
+.feature-icon {
+  width:46px; height:46px; border-radius:12px;
+  background:rgba(79,142,247,0.12);
+  border:1px solid rgba(79,142,247,0.2);
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.3rem; margin-bottom:1.2rem;
+}
+.feature-card h3 { font-family:'Syne',sans-serif; font-weight:700; font-size:1.05rem; margin-bottom:0.6rem; }
+.feature-card p { font-size:0.875rem; color:var(--muted); line-height:1.65; font-weight:300; }
+
+.feature-card.highlight {
+  grid-column:span 2;
+  background:linear-gradient(135deg, rgba(79,142,247,0.08), rgba(124,92,252,0.06));
+  border-color:rgba(79,142,247,0.2);
+}
+
+/* How it works */
+.how-section {
+  padding:8rem 4rem;
+  background:linear-gradient(180deg, transparent, var(--bg2) 20%, var(--bg2) 80%, transparent);
+}
+.how-inner { max-width:1100px; margin:0 auto; }
+.how-header { text-align:center; margin-bottom:5rem; }
+.how-header h2 { font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2rem,4vw,3rem); letter-spacing:-0.03em; }
+.how-header p { margin-top:1rem; color:var(--muted); font-weight:300; line-height:1.7; }
+
+.steps { display:grid; grid-template-columns:repeat(3,1fr); gap:3rem; position:relative; }
+.steps::before {
+  content:''; position:absolute; top:2rem; left:15%; right:15%; height:1px;
+  background:linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent);
+  opacity:0.4;
+}
+.step { text-align:center; }
+.step-num {
+  width:52px; height:52px; border-radius:50%;
+  background:linear-gradient(135deg, var(--accent), var(--accent2));
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Syne',sans-serif; font-weight:800; font-size:1.1rem;
+  margin:0 auto 1.5rem; box-shadow:0 8px 28px var(--glow);
+}
+.step h3 { font-family:'Syne',sans-serif; font-weight:700; font-size:1.05rem; margin-bottom:0.6rem; }
+.step p { font-size:0.875rem; color:var(--muted); line-height:1.65; font-weight:300; }
+
+/* Testimonials */
+.testimonials { padding:8rem 4rem; max-width:1200px; margin:0 auto; }
+.testimonials-header { text-align:center; margin-bottom:4rem; }
+.testimonials-header h2 { font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2rem,4vw,3rem); letter-spacing:-0.03em; }
+
+.reviews-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.25rem; }
+.review-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:1.75rem;
+  transition:transform 0.3s, border-color 0.3s;
+}
+.review-card:hover { transform:translateY(-4px); border-color:rgba(255,255,255,0.12); }
+.review-stars { color:var(--accent3); font-size:0.8rem; margin-bottom:1rem; letter-spacing:0.1em; }
+.review-text { font-size:0.9rem; color:var(--muted); line-height:1.7; font-weight:300; font-style:italic; margin-bottom:1.3rem; }
+.review-author { display:flex; align-items:center; gap:0.75rem; }
+.review-avatar {
+  width:36px; height:36px; border-radius:50%;
+  background:linear-gradient(135deg, var(--accent), var(--accent2));
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Syne',sans-serif; font-weight:700; font-size:0.8rem;
+}
+.review-name { font-size:0.85rem; font-weight:500; }
+.review-role { font-size:0.72rem; color:var(--muted); }
+
+/* Pricing */
+.pricing { padding:8rem 4rem; background:linear-gradient(180deg,transparent,var(--bg2) 20%,var(--bg2) 80%,transparent); }
+.pricing-inner { max-width:900px; margin:0 auto; }
+.pricing-header { text-align:center; margin-bottom:4rem; }
+.pricing-header h2 { font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2rem,4vw,3rem); letter-spacing:-0.03em; }
+.pricing-header p { margin-top:1rem; color:var(--muted); font-weight:300; }
+
+.pricing-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+.plan-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:2.5rem;
+  position:relative; overflow:hidden;
+  transition:transform 0.3s;
+}
+.plan-card:hover { transform:translateY(-4px); }
+.plan-card.featured {
+  background:linear-gradient(135deg, rgba(79,142,247,0.1), rgba(124,92,252,0.08));
+  border-color:rgba(79,142,247,0.35);
+  box-shadow:0 0 60px rgba(79,142,247,0.1);
+}
+.plan-badge {
+  display:inline-block; padding:0.25rem 0.8rem;
+  background:linear-gradient(135deg, var(--accent), var(--accent2));
+  border-radius:50px; font-size:0.68rem; font-weight:600;
+  letter-spacing:0.05em; text-transform:uppercase;
+  margin-bottom:1.2rem;
+}
+.plan-name { font-family:'Syne',sans-serif; font-weight:800; font-size:1.3rem; margin-bottom:0.4rem; }
+.plan-desc { font-size:0.85rem; color:var(--muted); font-weight:300; margin-bottom:1.5rem; }
+.plan-price { font-family:'Syne',sans-serif; font-weight:800; margin-bottom:1.8rem; }
+.plan-price .amount { font-size:3rem; letter-spacing:-0.04em; }
+.plan-price .period { font-size:0.85rem; color:var(--muted); font-weight:400; }
+.plan-features { list-style:none; display:flex; flex-direction:column; gap:0.75rem; margin-bottom:2rem; }
+.plan-features li { display:flex; align-items:center; gap:0.6rem; font-size:0.875rem; color:var(--muted); }
+.plan-features li::before { content:'✓'; color:var(--accent); font-weight:700; font-size:0.8rem; flex-shrink:0; }
+.plan-features li.muted::before { content:'✗'; color:rgba(255,255,255,0.15); }
+.plan-features li.muted { opacity:0.4; }
+
+.plan-btn {
+  width:100%; padding:0.9rem;
+  border-radius:12px; border:none; cursor:pointer;
+  font-family:'Instrument Sans',sans-serif;
+  font-size:0.95rem; font-weight:500;
+  transition:transform 0.2s, box-shadow 0.2s;
+}
+.plan-btn.primary {
+  background:linear-gradient(135deg, var(--accent), var(--accent2));
+  color:#fff; box-shadow:0 8px 28px var(--glow);
+}
+.plan-btn.primary:hover { transform:translateY(-2px); box-shadow:0 12px 36px var(--glow); }
+.plan-btn.secondary {
+  background:rgba(255,255,255,0.05);
+  color:var(--text); border:1px solid var(--border);
+}
+.plan-btn.secondary:hover { background:rgba(255,255,255,0.08); }
+
+/* CTA */
+.cta-section {
+  padding:8rem 4rem; text-align:center;
+  position:relative; overflow:hidden;
+}
+.cta-bg {
+  position:absolute; inset:0; z-index:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 50%, rgba(79,142,247,0.08), transparent);
+}
+.cta-inner { position:relative; z-index:1; max-width:700px; margin:0 auto; }
+.cta-inner h2 { font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.5rem,5vw,4rem); letter-spacing:-0.04em; line-height:1.05; margin-bottom:1.5rem; }
+.cta-inner p { color:var(--muted); font-size:1rem; font-weight:300; line-height:1.7; margin-bottom:2.5rem; }
+.cta-actions { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+
+/* Footer */
+footer {
+  border-top:1px solid var(--border);
+  padding:3rem 4rem;
+  display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1.5rem;
+  position:relative; z-index:1;
+}
+.footer-logo {
+  font-family:'Syne',sans-serif; font-weight:800; font-size:1.2rem;
+  background:linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.footer-links { display:flex; gap:2rem; list-style:none; }
+.footer-links a { font-size:0.8rem; color:var(--muted); text-decoration:none; transition:color 0.2s; }
+.footer-links a:hover { color:var(--text); }
+.footer-copy { font-size:0.78rem; color:rgba(255,255,255,0.2); }
+
+/* Scroll reveal */
+.reveal {
+  opacity:0; transform:translateY(32px);
+  transition:opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible { opacity:1; transform:translateY(0); }
+
+@keyframes fadeUp {
+  from{opacity:0;transform:translateY(24px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:900px){
+#menuBtn { display:block; cursor:pointer; }
+
+.nav-links {
+  position:absolute;
+  top:70px;
+  right:20px;
+  background:#111827;
+  flex-direction:column;
+  padding:1rem;
+  display:none;
+  border-radius:10px;
+}
+
+.nav-links.active { display:flex; }
+  nav { padding:1rem 2rem; }
+  .nav-links { display:none; }
+  .features { padding:5rem 2rem; }
+  .features-grid { grid-template-columns:1fr; }
+  .feature-card.highlight { grid-column:span 1; }
+  .how-section { padding:5rem 2rem; }
+  .steps { grid-template-columns:1fr; gap:2rem; }
+  .steps::before { display:none; }
+  .testimonials { padding:5rem 2rem; }
+  .reviews-grid { grid-template-columns:1fr; }
+  .pricing { padding:5rem 2rem; }
+  .pricing-grid { grid-template-columns:1fr; }
+  .cta-section { padding:5rem 2rem; }
+  footer { padding:2rem; flex-direction:column; text-align:center; }
+  .footer-links { justify-content:center; }
+  .floating-tag { display:none; }
+}
+</style>
+</head>
+<body>
+    <!-- LOADER -->
+<div id="loader" style="position:fixed;inset:0;background:#080b12;display:flex;align-items:center;justify-content:center;z-index:9999;">
+  <h2 style="color:white;">Loading...</h2>
+</div>
+
+<!-- PROGRESS BAR -->
+<div id="progress" style="position:fixed;top:0;left:0;height:3px;background:#4f8ef7;width:0%;z-index:9999;"></div>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">lumio.</div>
+  <div id="menuBtn">☰</div>
+  <div class="menu-toggle" id="menuToggle">☰</div>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+  </ul>
+  <button class="nav-cta">Get Started Free</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <div class="hero-badge">Now available on iOS & Android</div>
+
+  <h1>Your focus,<br><span class="grad">supercharged.</span></h1>
+  <p class="hero-sub">Lumio blends deep work science with elegant design — helping you enter flow state faster, stay there longer, and accomplish more.</p>
+
+  <div class="hero-actions">
+    <button class="btn-primary">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Watch the demo
+    </button>
+    <button class="btn-secondary">Start free trial →</button>
+  </div>
+
+  <div class="store-badges">
+    <a class="store-badge" href="#">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+      <div class="store-badge-text"><small>Download on the</small><span>App Store</span></div>
+    </a>
+    <a class="store-badge" href="#">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76a2.5 2.5 0 0 0 2.93-.57l.11-.1L15.5 13.8l-3.4-3.4-8.92 13.36zM20.7 10.07l-2.58-1.49-3.83 3.44 3.81 3.81 2.62-1.52a2.07 2.07 0 0 0 0-4.24zM1.79.67a2.3 2.3 0 0 0-.29 1.1v20.45a2.3 2.3 0 0 0 .29 1.1l.07.09L13.1 12.07v-.13L1.86.58z"/></svg>
+      <div class="store-badge-text"><small>Get it on</small><span>Google Play</span></div>
+    </a>
+  </div>
+
+  <div class="hero-visual">
+    <div class="phone-wrap">
+      <div class="phone-frame">
+        <div class="phone-screen">
+          <div class="phone-status">
+            <span class="phone-time">9:41</span>
+            <span>●●●  WiFi  🔋</span>
+          </div>
+
+          <div class="phone-card">
+            <div class="phone-card-label">Focus Score Today</div>
+            <div class="phone-card-val">8.4 <span style="font-size:0.65rem;color:rgba(79,142,247,0.8)">↑ 12%</span></div>
+            <div class="phone-card-sub">✦ Personal best this week</div>
+          </div>
+
+          <div class="phone-ring-wrap">
+            <div class="phone-ring-bg">
+              <div class="phone-ring-inner">
+                <span>72%</span>
+                <small>Daily Goal</small>
+              </div>
+            </div>
+          </div>
+
+          <div style="padding:0 0.1rem">
+            <div style="font-size:0.5rem;color:rgba(255,255,255,0.3);margin-bottom:0.5rem;letter-spacing:0.08em;text-transform:uppercase">Weekly Breakdown</div>
+            <div class="phone-bar-row">
+              <div style="display:flex;justify-content:space-between;font-size:0.5rem;color:rgba(255,255,255,0.4);margin-bottom:0.2rem"><span>Deep Work</span><span>3h 12m</span></div>
+              <div class="phone-bar"><div class="phone-bar-fill b1"></div></div>
+              <div style="display:flex;justify-content:space-between;font-size:0.5rem;color:rgba(255,255,255,0.4);margin-bottom:0.2rem"><span>Breaks</span><span>1h 05m</span></div>
+              <div class="phone-bar"><div class="phone-bar-fill b2"></div></div>
+              <div style="display:flex;justify-content:space-between;font-size:0.5rem;color:rgba(255,255,255,0.4);margin-bottom:0.2rem"><span>Flow State</span><span>4h 28m</span></div>
+              <div class="phone-bar"><div class="phone-bar-fill b3"></div></div>
+            </div>
+          </div>
+
+          <div class="phone-card" style="background:linear-gradient(135deg,rgba(79,142,247,0.15),rgba(124,92,252,0.12));border-color:rgba(79,142,247,0.2)">
+            <div class="phone-card-label">Session active</div>
+            <div style="display:flex;align-items:center;gap:0.5rem;margin-top:0.2rem">
+              <div style="width:6px;height:6px;border-radius:50%;background:#4f8ef7;animation:pulse 1.5s ease-in-out infinite"></div>
+              <span style="font-size:0.65rem;color:rgba(255,255,255,0.8);font-weight:500">Deep Work · 47:12 remaining</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="floating-tag tag-1">
+        <div class="tag-dot" style="background:#7c5cfc"></div>
+        <span>Flow state detected 🔥</span>
+      </div>
+      <div class="floating-tag tag-2">
+        <div class="tag-dot" style="background:#f7c34f"></div>
+        <span>+23% productivity boost</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-strip">
+  <div class="stat-item reveal">
+    <div class="stat-num">2.4M+</div>
+    <div class="stat-label">Active users worldwide</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-num">4.9★</div>
+    <div class="stat-label">App Store rating</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-num">68%</div>
+    <div class="stat-label">Avg. productivity increase</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-num">180+</div>
+    <div class="stat-label">Countries reached</div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="features-header reveal">
+    <p class="section-label">What we offer</p>
+    <h2>Everything you need to<br>reach your peak performance</h2>
+    <p>Built on decades of focus research, Lumio gives you powerful tools wrapped in a beautiful, distraction-free experience.</p>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-card highlight reveal">
+      <div class="feature-icon">🧠</div>
+      <h3>AI-Powered Flow Engine</h3>
+      <p>Our intelligent engine learns your peak performance patterns and schedules deep work sessions at exactly the right moment — so you never waste a high-energy hour on low-priority tasks again. Adapts to your calendar, sleep patterns, and energy levels in real time.</p>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">⏱</div>
+      <h3>Smart Pomodoro Timer</h3>
+      <p>Adaptive intervals that adjust based on your focus depth — no rigid 25-minute blocks when you're in the zone.</p>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">📊</div>
+      <h3>Deep Analytics</h3>
+      <p>Visualize your focus trends over days, weeks, and months. Identify your most productive hours effortlessly.</p>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">🎵</div>
+      <h3>Focus Soundscapes</h3>
+      <p>Curated binaural beats and ambient noise profiles proven to boost concentration and reduce mental fatigue.</p>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">🔒</div>
+      <h3>App Blocker</h3>
+      <p>Lock distracting apps during focus sessions with gentle nudges instead of hard blocks — willpower that scales.</p>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">🔄</div>
+      <h3>Cross-Device Sync</h3>
+      <p>Seamlessly move between iPhone, iPad, Mac and Android. Your data follows you everywhere, instantly.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <div class="how-inner">
+    <div class="how-header reveal">
+      <p class="section-label">How it works</p>
+      <h2>From setup to flow state<br>in under 3 minutes</h2>
+      <p>No complicated onboarding. Just open the app and let Lumio guide you.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-num">1</div>
+        <h3>Create your profile</h3>
+        <p>Tell Lumio about your goals, work style, and schedule. Takes 2 minutes and adapts as you use the app.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">2</div>
+        <h3>Start a focus session</h3>
+        <p>Pick a task, set your intention, and hit start. Lumio configures the perfect environment automatically.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">3</div>
+        <h3>Track your growth</h3>
+        <p>Review your daily insights, celebrate streaks, and watch your productivity compound over time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials" id="reviews">
+  <div class="testimonials-header reveal">
+    <p class="section-label">Real stories</p>
+    <h2>Loved by people who create</h2>
+  </div>
+  <div class="reviews-grid">
+    <div class="review-card reveal">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"I've tried every productivity app and Lumio is the first one I've actually stuck with. The AI scheduling is genuinely magical — it knows when I'm at my best before I do."</p>
+      <div class="review-author">
+        <div class="review-avatar">SK</div>
+        <div><div class="review-name">Sarah K.</div><div class="review-role">Product Designer, Figma</div></div>
+      </div>
+    </div>
+    <div class="review-card reveal">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"My output doubled in the first month. Not exaggerating. The focus soundscapes alone are worth the subscription price for a developer like me."</p>
+      <div class="review-author">
+        <div class="review-avatar" style="background:linear-gradient(135deg,#7c5cfc,#c084fc)">MR</div>
+        <div><div class="review-name">Marco R.</div><div class="review-role">Senior Engineer, Stripe</div></div>
+      </div>
+    </div>
+    <div class="review-card reveal">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"As a freelance writer juggling multiple clients, Lumio's analytics helped me realize I was wasting my peak hours on email. Game changer."</p>
+      <div class="review-author">
+        <div class="review-avatar" style="background:linear-gradient(135deg,#f7c34f,#f79c4f)">AP</div>
+        <div><div class="review-name">Aisha P.</div><div class="review-role">Content Strategist</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="pricing-inner">
+    <div class="pricing-header reveal">
+        <div style="margin-top:1rem;">
+  <button onclick="togglePricing()">Toggle Yearly</button>
+</div>
+      <p class="section-label">Simple pricing</p>
+      <h2>Start free, scale as you grow</h2>
+      <p>No hidden fees. Cancel anytime.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="plan-card reveal">
+        <div class="plan-name">Free</div>
+        <div class="plan-desc">Perfect for getting started with focus basics.</div>
+        <div class="plan-price"><span class="amount">$0</span><span class="period"> / forever</span></div>
+        <ul class="plan-features">
+          <li>3 focus sessions per day</li>
+          <li>Basic Pomodoro timer</li>
+          <li>7-day analytics history</li>
+          <li>2 soundscape tracks</li>
+          <li class="muted">AI Flow Engine</li>
+          <li class="muted">Cross-device sync</li>
+          <li class="muted">App Blocker</li>
+        </ul>
+        <button class="plan-btn secondary">Get started free</button>
+      </div>
+      <div class="plan-card featured reveal">
+        <div class="plan-badge">Most popular</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-desc">For serious creators who want to unlock their full potential.</div>
+        <div class="plan-price"><span class="amount">$9</span><span class="period"> / month</span></div>
+        <ul class="plan-features">
+          <li>Unlimited focus sessions</li>
+          <li>Smart adaptive timer</li>
+          <li>Full analytics history</li>
+          <li>40+ soundscape tracks</li>
+          <li>AI Flow Engine</li>
+          <li>Cross-device sync</li>
+          <li>App Blocker & nudges</li>
+        </ul>
+        <button class="plan-btn primary">Start 14-day free trial</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-bg"></div>
+  <div class="cta-inner reveal">
+    <h2>Ready to unlock your<br><span style="background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent">flow state?</span></h2>
+    <p>Join 2.4 million people already achieving more with less stress. Your first 14 days are completely free.</p>
+    <div class="cta-actions">
+        <input type="email" id="emailInput" placeholder="Enter your email" style="padding:0.8rem;border-radius:10px;border:none;">
+<button onclick="submitEmail()">Join</button>
+      <button class="btn-primary" style="font-size:1.05rem;padding:1rem 2.2rem">Download Lumio Free →</button>
+      <button class="btn-secondary">View all features</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">lumio.</div>
+  <ul class="footer-links">
+    <li><a href="#">Product</a></li>
+    <li><a href="#">Company</a></li>
+    <li><a href="#">Blog</a></li>
+    <li><a href="#">Privacy</a></li>
+    <li><a href="#">Terms</a></li>
+  </ul>
+  <div class="footer-copy">© 2025 Lumio Inc. All rights reserved.</div>
+</footer>
+<!-- DEMO MODAL -->
+<div id="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); align-items:center; justify-content:center; z-index:9999;">
+  <div style="background:#111827; padding:20px; border-radius:12px; max-width:600px; width:90%;">
+    <h3 style="color:white;">Demo Video</h3>
+    <p style="color:gray;">Demo coming soon 🎬</p>
+    <button onclick="closeModal()" style="margin-top:10px;">Close</button>
+  </div>
+</div>
+
+<style>
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+</style>
+
+<script>
+// Custom cursor
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx + 'px';
+  cursor.style.top = my + 'px';
+});
+
+(function animateRing(){
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px';
+  ring.style.top = ry + 'px';
+  requestAnimationFrame(animateRing);
+})();
+
+document.querySelectorAll('a,button').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cursor.style.width = '20px'; cursor.style.height = '20px';
+    ring.style.width = '52px'; ring.style.height = '52px';
+  });
+  el.addEventListener('mouseleave', () => {
+    cursor.style.width = '10px'; cursor.style.height = '10px';
+    ring.style.width = '36px'; ring.style.height = '36px';
+  });
+});
+
+// Scroll reveal
+const observer = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+    }
+  });
+}, { threshold: 0.12 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+/* LOADER */
+window.onload = () => {
+  document.getElementById('loader').style.display = 'none';
+};
+
+/* PROGRESS BAR */
+window.addEventListener('scroll', () => {
+  const scroll = window.scrollY;
+  const height = document.body.scrollHeight - window.innerHeight;
+  document.getElementById('progress').style.width = (scroll / height) * 100 + "%";
+});
+
+/* BUTTON ACTIONS */
+document.querySelectorAll('.btn-primary, .nav-cta').forEach(btn => {
+  btn.addEventListener('click', openModal);
+});
+
+document.querySelectorAll('.btn-secondary').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelector('#pricing').scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+/* NAVIGATION SCROLL */
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelector(link.getAttribute('href')).scrollIntoView({
+      behavior: 'smooth'
+    });
+  });
+});
+
+/* MOBILE MENU */
+document.getElementById('menuBtn').onclick = () => {
+  document.querySelector('.nav-links').classList.toggle('active');
+};
+
+/* MODAL */
+function openModal() {
+  document.getElementById('modal').style.display = 'flex';
+}
+function closeModal() {
+  document.getElementById('modal').style.display = 'none';
+}
+
+/* EMAIL VALIDATION */
+function submitEmail() {
+  const email = document.getElementById('emailInput').value;
+  if (!email.includes('@')) {
+    alert("Enter valid email ❌");
+  } else {
+    alert("Subscribed successfully 🎉");
+  }
+}
+
+/* PRICING TOGGLE */
+let yearly = false;
+function togglePricing() {
+  yearly = !yearly;
+  const price = document.querySelector('.plan-card.featured .amount');
+  price.innerText = yearly ? "$90" : "$9";
+}
+
+/* STATS ANIMATION */
+document.querySelectorAll('.stat-num').forEach(stat => {
+  const finalText = stat.innerText;
+  const number = parseFloat(finalText.replace(/[^\d.]/g, ''));
+  let count = 0;
+
+  const interval = setInterval(() => {
+    count += Math.ceil(number / 40);
+    if (count >= number) {
+      stat.innerText = finalText;
+      clearInterval(interval);
+    } else {
+      stat.innerText = Math.floor(count);
+    }
+  }, 30);
+});
+</script>
+</body>
+</html>
